@@ -1,7 +1,9 @@
 drop database if exists e_commerce;
 create database e_commerce;
 use e_commerce;
-drop table if exists Supplier;
+
+/* SOLUTION 1 */
+drop table if exists Supplier; 
 CREATE TABLE Supplier (
     SUPP_ID INT PRIMARY KEY,
     SUPP_NAME VARCHAR(50),
@@ -64,6 +66,7 @@ CREATE TABLE Rating (
     FOREIGN KEY(CUS_ID) REFERENCES Customer(CUS_ID) 
 );
 
+/* SOLUTION 2 */
 INSERT INTO Supplier values(1, "Rajesh Retails", "Delhi", 1234567890);
 INSERT INTO Supplier values(2, "Appario Ltd.", "Mumbai", 2589631470);
 INSERT INTO Supplier values(3, "Knome products", "Banglore", 9785462315);
@@ -106,6 +109,7 @@ INSERT INTO Rating values(3, 5, 1, 5);
 INSERT INTO Rating values(4, 1, 3, 2);
 INSERT INTO Rating values(5, 4, 5, 4);
 
+/* SOLUTION 3 */
 SELECT 
     CUS_GENDER, COUNT(CUS_GENDER)
 FROM
@@ -116,3 +120,93 @@ WHERE
     o.ORD_AMOUNT >= 3000
 GROUP BY c.CUS_GENDER;
 
+/* SOLUTION 4 */
+SELECT 
+    *
+FROM
+    Orders o
+        JOIN
+    ProductDetails p ON o.PROD_ID = p.PROD_ID
+        JOIN
+    Product pr ON pr.PRO_ID = p.PRO_ID
+WHERE
+    o.CUS_ID = 2; 
+    
+/* SOLUTION 5 */
+SELECT 
+    *
+FROM
+    Supplier
+WHERE
+    SUPP_ID IN (SELECT 
+            SUPP_ID
+        FROM
+            ProductDetails
+        GROUP BY SUPP_ID
+        HAVING COUNT(SUPP_ID) > 1);
+    
+/* SOLUTION 6 */
+SELECT 
+    c.*
+FROM
+    Orders o
+        JOIN
+    ProductDetails pd ON pd.PROD_ID = o.PROD_ID
+        JOIN
+    Product p ON p.PRO_ID = pd.PRO_ID
+        JOIN
+    Category c ON c.CAT_ID = p.CAT_ID
+HAVING MIN(o.ORD_AMOUNT);	
+
+/* SOLUTION 7 */
+SELECT 
+    p.PRO_ID, p.PRO_NAME
+FROM
+    Orders o
+        JOIN
+    ProductDetails pd ON (o.PROD_ID = pd.PROD_ID)
+        JOIN
+    Product p ON (p.PRO_ID = pd.PRO_ID)
+WHERE
+    o.ORD_DATE > '2021-10-05';
+    
+/* SOLUTION 8 */
+SELECT 
+    s.SUPP_ID, s.SUPP_NAME, c.CUS_NAME, r.RAT_RATSTARS
+FROM
+    Rating r
+        JOIN
+    Supplier s ON (r.SUPP_ID = s.SUPP_ID)
+        JOIN
+    Customer c ON (r.CUS_ID = c.CUS_ID)
+ORDER BY r.RAT_RATSTARS DESC
+LIMIT 3;
+
+/* SOLUTION 9 */
+SELECT 
+    CUS_NAME
+FROM
+    Customer
+WHERE
+    CUS_NAME LIKE 'A%' OR CUS_NAME LIKE '%A';
+    
+/* SOLUTION 10 */
+SELECT 
+    SUM(o.ORD_AMOUNT)
+FROM
+    Orders o,
+    Customer c
+WHERE
+    c.CUS_ID = o.CUS_ID
+        AND c.CUS_GENDER = 'M';
+        
+/* SOLUTION 11 */
+SELECT 
+    *
+FROM
+    Customer
+        LEFT OUTER JOIN
+    Orders ON Customer.CUS_ID = Orders.CUS_ID;
+
+/* SOLUTION 12 */
+CALL rate_suppliers();
