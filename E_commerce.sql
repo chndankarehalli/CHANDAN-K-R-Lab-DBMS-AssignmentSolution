@@ -105,3 +105,14 @@ INSERT INTO Rating values(2, 3, 4, 3);
 INSERT INTO Rating values(3, 5, 1, 5);
 INSERT INTO Rating values(4, 1, 3, 2);
 INSERT INTO Rating values(5, 4, 5, 4);
+
+SELECT 
+    CUS_GENDER, COUNT(CUS_GENDER)
+FROM
+    Customer c
+        JOIN
+    orders o ON o.CUS_ID = c.CUS_id
+WHERE
+    o.ORD_AMOUNT >= 3000
+GROUP BY c.CUS_GENDER;
+
